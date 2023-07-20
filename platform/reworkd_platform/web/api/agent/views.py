@@ -29,7 +29,12 @@ from reworkd_platform.web.api.agent.dependancies import (
 from reworkd_platform.web.api.agent.tools.tools import get_external_tools, get_tool_name
 
 router = APIRouter()
+router = APIRouter()
 
+@router.get("/resume")
+async def resume_agent():
+    # code to resume the agent's operation
+    pass
 
 @router.post(
     "/start",
