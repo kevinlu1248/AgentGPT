@@ -65,6 +65,7 @@ async def execute_tasks(
         goal=req_body.goal or "",
         task=req_body.task or "",
         analysis=req_body.analysis or Analysis.get_default_analysis(),
+        avatar=req_body.avatar,
     )
 
 
@@ -79,6 +80,7 @@ async def create_tasks(
         last_task=req_body.last_task or "",
         result=req_body.result or "",
         completed_tasks=req_body.completed_tasks or [],
+        avatar=req_body.avatar,
     )
     return NewTasksResponse(newTasks=new_tasks, run_id=req_body.run_id)
 
