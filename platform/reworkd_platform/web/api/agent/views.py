@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse as FastAPIStreamingResponse
 from pydantic import BaseModel
 
@@ -12,6 +12,7 @@ from reworkd_platform.schemas.agent import (
     AgentSummarize,
     AgentChat,
     NewTasksResponse,
+    AgentResume,
 )
 from reworkd_platform.web.api.agent.agent_service.agent_service import AgentService
 from reworkd_platform.web.api.agent.agent_service.agent_service_provider import (
@@ -25,6 +26,7 @@ from reworkd_platform.web.api.agent.dependancies import (
     agent_execute_validator,
     agent_start_validator,
     agent_summarize_validator,
+    agent_resume_validator,
 )
 from reworkd_platform.web.api.agent.tools.tools import get_external_tools, get_tool_name
 
@@ -135,3 +137,15 @@ async def get_user_tools() -> ToolsResponse:
     ]
 
     return ToolsResponse(tools=formatted_tools)
+
+
+@router.post("/{id}/resume")
+async def resume_agent(
+    id: str,
+    req_body: AgentResume = Depends(agent_resume_validator),
+    agent_service: AgentService = Depends(get_agent_service(agent_resume_validator)),
+) -> None:
+    try:
+        await agent_service.resume_agent(id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
